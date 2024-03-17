@@ -6,6 +6,7 @@
 </head>
 <body>
 Logout Home <br>
-<a href="/">Home</a>
+<a href="/">Go Home</a> <br>
+<a href="/logout">Go Logout</a>
 </body>
 </html>
