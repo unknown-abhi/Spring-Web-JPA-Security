@@ -5,18 +5,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+// In This class we are fetching data from the database
 @Configuration
 @EnableWebSecurity
-// In This class we are fetching data from the database
 public class AppSecurityConfig {
+
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -29,6 +30,31 @@ public class AppSecurityConfig {
 //        provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
         return provider;
     }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .csrf().disable()
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login")))
+                .authorizeHttpRequests(requests -> requests.requestMatchers("/WEB-INF/**").permitAll()
+                        .anyRequest().authenticated())
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .permitAll()
+                        .successForwardUrl("/")  // Use successForwardUrl for a server-side redirect
+                        .failureUrl("/login?error=true"))  // Specify a URL for failed logins
+                .logout(logout -> logout.invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                        .logoutSuccessUrl("/logout-success").permitAll()
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            // Redirect to home after successful logout
+                            response.sendRedirect("/");
+                        }))
+                .build();
+    }
+
 //    // This way we can override the default configuration
 //    @Bean
 //    public UserDetailsService userDetailsService() {
