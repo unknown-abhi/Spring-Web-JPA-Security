@@ -7,6 +7,6 @@
 <body>
 Logout Home <br>
 <a href="/">Go Home</a> <br>
-<a href="/logout">Go Logout</a>
+<a href="/logout">Logout</a>
 </body>
 </html>
