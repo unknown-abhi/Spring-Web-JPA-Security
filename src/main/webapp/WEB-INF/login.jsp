@@ -14,7 +14,7 @@
 <body>
 <div class="container">
     <form class="form-signin" method="post" action="/login">
-        <h2 class="form-signin-heading">Please Signin</h2>
+        <h2 class="form-signin-heading">Please Sign-In</h2>
         <p>
             <label for="username" class="sr-only">Username</label>
             <input type="text" id="username" name="username" class="form-control" placeholder="Username" required

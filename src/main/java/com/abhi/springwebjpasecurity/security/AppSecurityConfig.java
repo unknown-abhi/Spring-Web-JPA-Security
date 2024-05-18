@@ -34,8 +34,9 @@ public class AppSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf(AbstractHttpConfigurer::disable)
+
+        return http.csrf(AbstractHttpConfigurer::disable)
+                .cors(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login")))
                 .authorizeHttpRequests(requests -> requests.requestMatchers("/WEB-INF/**").permitAll()
